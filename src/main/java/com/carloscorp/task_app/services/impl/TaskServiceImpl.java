@@ -139,9 +139,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void type(char key){
-        keyPress(key);
-        robot.delay(25);
-        keyRelease(key);
+        try {
+            keyPress(key);
+            robot.delay(25);
+            keyRelease(key);
+        }catch (IllegalArgumentException e){
+            log.error("Illegal key {} omitting", key);
+        }
     }
 
     private void keyPress(char key){
