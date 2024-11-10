@@ -1,9 +1,0 @@
-spring:
-  rabbitmq:
-    addresses: rabbitmq
-    username: guest
-    password: guest
-
-config:
-  active:
-    on-profile: dev
