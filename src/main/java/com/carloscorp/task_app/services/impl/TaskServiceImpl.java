@@ -96,7 +96,7 @@ public class TaskServiceImpl implements TaskService {
     private void write(String text){
         log.info("Typing {}", text);
         for (char c : text.toCharArray()){
-            keyPressAndRelease(c);
+            typeChar(c);
             robot.delay(100);
         }
     }
@@ -128,7 +128,17 @@ public class TaskServiceImpl implements TaskService {
         robot.mouseRelease(InputEvent.BUTTON2_DOWN_MASK);
     }
 
-    private void keyPressAndRelease(char key){
+    private void typeChar(char key){
+        if (Character.isLetter(key) && Character.isUpperCase(key)){
+            robot.keyPress(KeyEvent.VK_SHIFT);
+            type(key);
+            robot.keyRelease(KeyEvent.VK_SHIFT);
+        }else {
+            type(key);
+        }
+    }
+
+    private void type(char key){
         keyPress(key);
         robot.delay(25);
         keyRelease(key);
