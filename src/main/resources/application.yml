@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: task_app_bot
+
+  rabbitmq:
+    addresses: localhost
+    username: guest
+    password: guest
