@@ -16,7 +16,6 @@ public class StepMove implements Step {
 
     private int x;
     private int y;
-    private int delay;
 
     @Override
     public StepType getType() {

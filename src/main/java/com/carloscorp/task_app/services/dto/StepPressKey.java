@@ -17,7 +17,6 @@ import java.util.List;
 public class StepPressKey implements Step {
 
     private List<Integer> keys;
-    private int delay;
     private boolean combine;
 
     @Override

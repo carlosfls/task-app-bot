@@ -15,7 +15,6 @@ import lombok.Setter;
 public class StepWrite implements Step {
 
     private String text;
-    private int delay;
 
     @Override
     public StepType getType() {
