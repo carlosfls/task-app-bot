@@ -17,7 +17,7 @@ import static java.awt.event.KeyEvent.VK_NUMPAD8;
 import static java.awt.event.KeyEvent.VK_NUMPAD9;
 
 @Component
-public class KeyUtils {
+public class KeyUtilService {
 
     public boolean typeSpecialCharacter(Robot robot, Character characterKey) {
         return switch (characterKey) {

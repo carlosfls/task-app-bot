@@ -8,7 +8,7 @@ import com.carloscorp.task_app.services.dto.StepWrite;
 import com.carloscorp.task_app.services.dto.TaskDTO;
 import com.carloscorp.task_app.services.enums.MouseKeyType;
 import com.carloscorp.task_app.services.enums.TaskState;
-import com.carloscorp.task_app.services.util.KeyUtils;
+import com.carloscorp.task_app.services.util.KeyUtilService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -28,7 +28,7 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
 
     private final Robot robot;
-    private final KeyUtils keyUtils;
+    private final KeyUtilService keyUtils;
 
     @RabbitHandler
     public void healthCheck(String message){
