@@ -8,6 +8,7 @@ import com.carloscorp.task_app.services.dto.StepWrite;
 import com.carloscorp.task_app.services.dto.TaskDTO;
 import com.carloscorp.task_app.services.enums.MouseKeyType;
 import com.carloscorp.task_app.services.enums.TaskState;
+import com.carloscorp.task_app.services.util.KeyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -27,6 +28,7 @@ import java.util.List;
 public class TaskServiceImpl implements TaskService {
 
     private final Robot robot;
+    private final KeyUtils keyUtils;
 
     @RabbitHandler
     public void healthCheck(String message){
@@ -129,12 +131,15 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private void typeChar(char key){
-        if (Character.isLetter(key) && Character.isUpperCase(key)){
-            robot.keyPress(KeyEvent.VK_SHIFT);
-            type(key);
-            robot.keyRelease(KeyEvent.VK_SHIFT);
-        }else {
-            type(key);
+        boolean special = keyUtils.typeSpecialCharacter(robot, key);
+        if (!special){
+            if (Character.isLetter(key) && Character.isUpperCase(key)){
+                robot.keyPress(KeyEvent.VK_SHIFT);
+                type(key);
+                robot.keyRelease(KeyEvent.VK_SHIFT);
+            }else {
+                type(key);
+            }
         }
     }
 
