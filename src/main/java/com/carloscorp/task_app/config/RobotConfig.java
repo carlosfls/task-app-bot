@@ -10,6 +10,8 @@ public class RobotConfig {
 
     @Bean
     public Robot robot() throws AWTException {
-        return new Robot();
+        Robot robot = new Robot();
+        robot.setAutoWaitForIdle(true);
+        return robot;
     }
 }
