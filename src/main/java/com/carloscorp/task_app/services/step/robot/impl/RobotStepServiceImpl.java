@@ -1,24 +1,33 @@
-package com.carloscorp.task_app.services.step.impl;
+package com.carloscorp.task_app.services.step.robot.impl;
 
 import com.carloscorp.task_app.services.enums.MouseKeyType;
-import com.carloscorp.task_app.services.step.StepService;
+import com.carloscorp.task_app.services.step.robot.RobotStepService;
 import com.carloscorp.task_app.services.util.KeyUtilService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
+
+import javax.imageio.ImageIO;
 
 import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RobotStepServiceImpl implements StepService {
+public class RobotStepServiceImpl implements RobotStepService {
 
     private final Robot robot;
     private final KeyUtilService keyUtils;
+    private final ResourceLoader resourceLoader;
 
     @Override
     public void move(int x, int y){
@@ -73,6 +82,46 @@ public class RobotStepServiceImpl implements StepService {
         robot.keyPress(KeyEvent.VK_M);
         robot.keyRelease(KeyEvent.VK_WINDOWS);
         robot.keyRelease(KeyEvent.VK_M);
+    }
+
+    //todo revisar par poder calibrar.
+    //no me esta detectando el rojo en la imagen.
+    @Override
+    public void calibrate() throws IOException {
+        minimizeAll();
+        Resource resource = resourceLoader.getResource("classpath:/images/desktop-map.png");
+        //cargar la imagen
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(resource.getContentAsByteArray());
+        BufferedImage bufferedImage = ImageIO.read(inputStream);
+        //buscar en esa imagen los puntos rojos y obtener la coordenada de cada punto rojo en la imagen.
+        List<Integer> coordinates = new ArrayList<>();
+        findColorInImage(bufferedImage, Color.red, coordinates);
+        //mover el robot hacia esa coordenada.
+        for(int i =0 ; i < coordinates.size()-1; i++){
+            int x = coordinates.get(i);
+            int y = coordinates.get(i+1);
+            move(x, y);
+        }
+    }
+
+    public void findColorInImage(BufferedImage image, Color color, List<Integer> coordinates){
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        for(int y = 0; y < height; y++){
+            for (int x = 0; x < width; x++){
+                Color pixelColor = getRgb(image, x, y);
+                if (pixelColor.equals(color)){
+                    coordinates.add(x);
+                    coordinates.add(y);
+                }
+            }
+        }
+    }
+
+    private Color getRgb(BufferedImage image, int x, int y){
+        int rgb = image.getRGB(x, y);
+        return new Color(rgb);
     }
 
     private void leftClick(){

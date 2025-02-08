@@ -1,7 +1,5 @@
 package com.carloscorp.task_app.services.task.impl;
 
-import com.carloscorp.task_app.services.step.StepService;
-import com.carloscorp.task_app.services.task.TaskService;
 import com.carloscorp.task_app.services.dto.Step;
 import com.carloscorp.task_app.services.dto.StepClick;
 import com.carloscorp.task_app.services.dto.StepMove;
@@ -9,12 +7,15 @@ import com.carloscorp.task_app.services.dto.StepPressKey;
 import com.carloscorp.task_app.services.dto.StepWrite;
 import com.carloscorp.task_app.services.dto.TaskDTO;
 import com.carloscorp.task_app.services.enums.TaskState;
+import com.carloscorp.task_app.services.step.robot.RobotStepService;
+import com.carloscorp.task_app.services.task.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.time.Duration;
 
 @RabbitListener(queues = "q.task")
@@ -23,7 +24,7 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class RabbitMQTaskServiceImpl implements TaskService {
 
-    private final StepService robotStepService;
+    private final RobotStepService robotStepService;
 
     @RabbitHandler
     public void healthCheck(String message){
@@ -35,7 +36,12 @@ public class RabbitMQTaskServiceImpl implements TaskService {
     public void consumeTask(TaskDTO dto) throws InterruptedException {
         log.info("Receiving task {}", dto.getDescription());
         Thread.sleep(Duration.ofSeconds(2));
-        executeTask(dto);
+        try {
+            robotStepService.calibrate();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        //executeTask(dto);
         log.info("Task finished");
         dto.setState(TaskState.FINISH);
     }
