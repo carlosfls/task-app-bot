@@ -1,8 +1,8 @@
-package com.carloscorp.task_app.exception;
+package com.carloscorp.task_app.services.task.impl;
 
-import com.carloscorp.task_app.services.TaskService;
 import com.carloscorp.task_app.services.dto.TaskDTO;
 import com.carloscorp.task_app.services.enums.TaskState;
+import com.carloscorp.task_app.services.task.TaskService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -13,8 +13,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ErrorMessagesHandler implements TaskService {
+public class RabbitMQErrorMessagesHandler implements TaskService {
 
+    @Override
     @RabbitHandler
     public void consumeTask(TaskDTO dto) {
         dto.setState(TaskState.ERROR);
